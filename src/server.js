@@ -70,6 +70,51 @@ app.post('/api/fotos', (req, res) => {
   res.status(201).json(nueva);
 });
 
+// Actualizar parcialmente una foto
+app.patch('/api/fotos/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const foto = fotos.find((f) => f.id === id);
+
+  if (!foto) {
+    return res
+      .status(404)
+      .json({ mensaje: `Foto ${id} no encontrada` });
+  }
+
+  const { titulo, descripcion, calificacion } = req.body;
+
+  if (titulo !== undefined) {
+    foto.titulo = titulo;
+  }
+
+  if (descripcion !== undefined) {
+    foto.descripcion = descripcion;
+  }
+
+  if (calificacion !== undefined) {
+    foto.calificacion = calificacion;
+  }
+
+  res.json(foto);
+});
+
+
+// Eliminar una foto
+app.delete('/api/fotos/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const indice = fotos.findIndex((f) => f.id === id);
+
+  if (indice === -1) {
+    return res
+      .status(404)
+      .json({ mensaje: `Foto ${id} no encontrada` });
+  }
+
+  fotos.splice(indice, 1);
+
+  res.status(204).send();
+});
+
 // Express 5: un error en una función async
 // llega solo al middleware de errores
 app.get('/api/error', async () => {
